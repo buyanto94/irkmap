@@ -1,8 +1,19 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
+interface TourismObject {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  rating: number;
+  distance: number;
+  lat: number;
+  lng: number;
+}
+
 export const useObjectsStore = defineStore('objects', () => {
-  const objects = ref<any[]>([]);
+  const objects = ref<TourismObject[]>([]);
   const loading = ref(false);
 
   const fetchObjects = async () => {

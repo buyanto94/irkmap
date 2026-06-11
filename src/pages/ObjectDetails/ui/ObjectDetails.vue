@@ -1,94 +1,95 @@
 <script setup lang="ts">
 import DefaultLayout from '@/shared/ui/DefaultLayout.vue';
 import { MapPin, Star, Phone, Globe, Clock, ChevronLeft } from 'lucide-vue-next';
+import { useRouter } from 'vue-router';
+
+defineOptions({ name: 'ObjectDetailsView' });
+
+const router = useRouter();
 </script>
 
 <template>
   <DefaultLayout>
-    <div class="bg-gray-50 flex-grow py-8">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <router-link :to="{ name: 'catalog' }" class="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 mb-6 transition">
-          <ChevronLeft class="w-4 h-4" />
-          Назад в каталог
-        </router-link>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      
+      <button @click="router.back()" class="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 mb-6 transition">
+        <ChevronLeft class="w-4 h-4" />
+        Назад в каталог
+      </button>
 
-        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-8">
-          <!-- Галерея -->
-          <div class="h-64 sm:h-96 w-full bg-gray-200 relative group cursor-pointer">
-            <div class="absolute inset-0 flex items-center justify-center text-gray-400">
-               Галерея изображений
-            </div>
-            <div class="absolute bottom-4 right-4 bg-black/60 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm font-medium">
-              Смотреть все фото
-            </div>
+      <!-- Gallery -->
+      <div class="bg-gray-200 rounded-3xl overflow-hidden mb-10 h-[300px] sm:h-[500px] relative">
+        <img src="https://picsum.photos/seed/details/1200/600" alt="Gallery" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 hover:opacity-100 transition duration-300 bg-black/30 backdrop-blur-sm">
+           <button class="bg-white text-gray-900 px-6 py-3 rounded-full font-bold shadow-lg pointer-events-auto hover:bg-gray-50 transition transform hover:scale-105 active:scale-95">
+             Смотреть фотогалерею
+           </button>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-12">
+        <!-- Main Info -->
+        <div class="lg:col-span-2">
+          <div class="flex items-center gap-3 mb-4 flex-wrap">
+            <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full uppercase tracking-wide">Гостиница</span>
+            <span class="flex items-center gap-1 text-sm font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              <Star class="w-4 h-4 fill-amber-500 text-amber-500" />
+              4.8
+            </span>
           </div>
+          
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-8 tracking-tight">Гранд Отель Альпийский</h1>
 
-          <div class="p-8">
-            <div class="flex flex-col md:flex-row md:justify-between items-start gap-4 mb-6">
-              <div>
-                <div class="flex items-center gap-3 mb-2">
-                  <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Гостиница</span>
-                  <span class="flex items-center gap-1 text-sm font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded">
-                    <Star class="w-4 h-4 fill-amber-500 text-amber-500" />
-                    4.8
-                  </span>
-                  <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-200 flex items-center gap-1">
-                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    Открыто
-                  </span>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-900">Гранд Отель Альпийский</h1>
-              </div>
-            </div>
-
-            <p class="text-gray-600 leading-relaxed mb-8">
+          <div class="prose prose-lg max-w-none text-gray-600 leading-relaxed">
+            <p>
               Комфортабельный отель расположен в живописном районе. Идеально подходит для 
               активного отдыха и релаксации. Просторные номера с панорамными видами, SPA-центр 
               и ресторан местной кухни.
             </p>
+            <p>
+              В отеле предоставляются услуги высокого класса, включая крытый бассейн, тренажерный зал и бесплатный Wi-Fi на всей территории. Завтрак по системе "шведский стол" включен в стоимость проживания. Мы гарантируем, что ваш отдых будет незабываемым.
+            </p>
+          </div>
+        </div>
 
-            <div class="grid sm:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-xl border border-gray-100 mb-8">
-              <div class="space-y-4">
-                <h3 class="font-bold text-gray-900 mb-2">Контакты</h3>
-                <div class="flex items-center gap-3 text-gray-600">
-                  <Phone class="w-5 h-5 text-gray-400" />
-                  <a href="#" class="hover:text-blue-600 font-medium">+7 (999) 000-00-00</a>
-                </div>
-                <div class="flex items-center gap-3 text-gray-600">
-                  <Globe class="w-5 h-5 text-gray-400" />
-                  <a href="#" class="hover:text-blue-600 font-medium">example.com</a>
-                </div>
-              </div>
-              
-              <div class="space-y-4">
-                <h3 class="font-bold text-gray-900 mb-2">Основное</h3>
-                <div class="flex items-start gap-3 text-gray-600">
-                  <MapPin class="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
-                  <span>ул. Курортная, 15, Горняк</span>
-                </div>
-                <div class="flex items-start gap-3 text-gray-600">
-                  <Clock class="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
-                  <span>Круглосуточно</span>
-                </div>
-              </div>
-            </div>
+        <!-- Sidebar Contact Info & Map -->
+        <div class="space-y-6">
+          <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm">
+             <h3 class="font-bold text-xl text-gray-900 mb-6 font-display">Контакты</h3>
+             <div class="space-y-5">
+               <div class="flex items-start gap-4 text-gray-700">
+                 <Phone class="w-6 h-6 text-blue-600 shrink-0" />
+                 <a href="tel:+79990000000" class="hover:text-blue-600 font-medium text-lg transition">+7 (999) 000-00-00</a>
+               </div>
+               <div class="flex items-start gap-4 text-gray-700">
+                 <Globe class="w-6 h-6 text-blue-600 shrink-0" />
+                 <a href="#" class="hover:text-blue-600 font-medium transition text-lg truncate">alps-hotel.example.com</a>
+               </div>
+               <div class="flex items-start gap-4 text-gray-700">
+                 <Clock class="w-6 h-6 text-blue-600 shrink-0" />
+                 <span class="text-lg">Круглосуточно</span>
+               </div>
+             </div>
+          </div>
 
-            <div>
-              <h3 class="font-bold text-xl text-gray-900 mb-4">На карте</h3>
-              <div class="h-64 rounded-xl bg-gray-200 overflow-hidden relative">
-                <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 z-0">
-                  <MapPin class="w-8 h-8 text-blue-500 mb-2" />
-                  <span>Статичная карта проезда</span>
+          <div class="bg-gray-50 rounded-3xl border border-gray-200 p-2 overflow-hidden shadow-sm">
+             <div class="p-4 sm:p-6 pb-4">
+                <h3 class="font-bold text-lg text-gray-900">Расположение</h3>
+                <p class="text-gray-600 mt-2 flex items-start gap-2">
+                  <MapPin class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                  ул. Курортная, 15, Горняк
+                </p>
+             </div>
+             <div class="h-48 sm:h-64 bg-gray-200 rounded-2xl relative overflow-hidden border border-gray-300">
+                <img src="https://picsum.photos/seed/map/400/300" class="w-full h-full object-cover opacity-60" />
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-800 font-bold bg-white/40 backdrop-blur-sm">
+                  <MapPin class="w-8 h-8 text-blue-600 mb-2" />
+                  Статичная карта
                 </div>
-                <div class="absolute bottom-4 left-4 z-10">
-                  <button class="bg-white text-gray-900 px-4 py-2 text-sm font-medium rounded-lg shadow-sm border border-gray-200 hover:bg-gray-50 transition">
-                    Построить маршрут
-                  </button>
-                </div>
-              </div>
-            </div>
-
+             </div>
+             <button class="w-full mt-4 bg-white border border-gray-300 shadow-sm text-gray-900 py-3 rounded-xl font-bold hover:bg-gray-100 transition active:scale-[0.98]">
+               Построить маршрут
+             </button>
           </div>
         </div>
       </div>
