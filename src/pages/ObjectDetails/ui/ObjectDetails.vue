@@ -5,7 +5,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination } from 'swiper/modules';
 import { useTourismStore } from '@/app/stores/tourism';
-import { onMounted, computed } from 'vue';
+import { onMounted } from 'vue';
+import { Fancybox } from '@fancyapps/ui';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -41,17 +43,20 @@ const goToWebsite = () => {
     window.open(url, '_blank');
   }
 };
+
+const openGallery = (index: number) => {
+  if (!obj.value?.photos) return;
+  const images = obj.value.photos.map(src => ({ src, type: 'image' }));
+  Fancybox.show(images, {
+    startIndex: index,
+  });
+};
 </script>
 
 <template>
   <DefaultLayout>
     <div class="max-w-3xl mx-auto px-4 py-8 w-full">
       
-      <button @click="router.back()" class="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 mb-6 transition-colors">
-        <ChevronLeft class="w-4 h-4 flex-shrink-0" />
-        Назад в каталог
-      </button>
-
       <div v-if="!obj && tourismStore.isLoading" class="text-center py-12">
         <span class="text-gray-500 text-sm">Загрузка...</span>
       </div>
@@ -60,7 +65,7 @@ const goToWebsite = () => {
         <!-- Fullscreen/Swiper Gallery -->
         <div v-if="obj.photos && obj.photos.length" class="rounded-xl overflow-hidden mb-8 h-[250px] sm:h-[400px] border border-gray-200">
           <swiper :modules="swiperModules" navigation pagination :loop="true" class="h-full w-full">
-            <swiper-slide v-for="(photo, i) in obj.photos" :key="i">
+            <swiper-slide v-for="(photo, i) in obj.photos" :key="i" @click="openGallery(i)" class="cursor-pointer">
               <img :src="photo" alt="Gallery" class="w-full h-full object-cover" />
             </swiper-slide>
           </swiper>
@@ -95,11 +100,11 @@ const goToWebsite = () => {
               <span>{{ obj.contacts.hours }}</span>
             </div>
             <div class="flex flex-col sm:flex-row gap-3 mt-2" v-if="obj.contacts">
-               <button v-if="obj.contacts.phone" @click="showPhone" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-medium transition flex-grow">
+               <button v-if="obj.contacts.phone" @click="showPhone" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-medium transition cursor-pointer flex-grow">
                  <Phone class="w-5 h-5" />
                  Показать телефон
                </button>
-               <button v-if="obj.contacts.website" @click="goToWebsite" class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 py-3 px-6 rounded-xl font-medium transition flex-grow">
+               <button v-if="obj.contacts.website" @click="goToWebsite" class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 py-3 px-6 rounded-xl font-medium transition cursor-pointer flex-grow">
                  <Globe class="w-5 h-5" />
                  Перейти на сайт владельца
                </button>
@@ -117,7 +122,7 @@ const goToWebsite = () => {
               <MapPin class="w-6 h-6 text-gray-400 mb-1" />
               Статичная карта 
             </div>
-            <button class="w-full mt-2 bg-gray-100 border border-gray-200 text-gray-900 py-3 rounded-xl font-medium hover:bg-gray-200 transition">
+            <button class="w-full mt-2 bg-gray-100 border border-gray-200 text-gray-900 py-3 rounded-xl font-medium cursor-pointer hover:bg-gray-200 transition">
               Построить маршрут
             </button>
           </div>

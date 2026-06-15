@@ -34,7 +34,6 @@ export interface TourismObject {
   photos: string[];
   isOpen: boolean;
   contacts: Contacts;
-  region: string;
 }
 
 export interface CategoriesResponse {

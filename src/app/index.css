@@ -6,6 +6,10 @@ html, body, #app {
   overscroll-behavior-y: none;
 }
 
+button {
+  cursor: pointer;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */

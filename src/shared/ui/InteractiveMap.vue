@@ -39,6 +39,13 @@ onMounted(() => {
     // Initial markers
     updateMarkers();
 
+    const resizeObserver = new ResizeObserver(() => {
+      if (map) {
+        map.invalidateSize();
+      }
+    });
+    resizeObserver.observe(mapContainer.value);
+
     // Map events
     map.on('moveend', () => {
       if (map) {

@@ -20,11 +20,10 @@
       "isOpen": true,
       "contacts": {
         "phone": "+7 (999) 000-00-00",
-        "website": "alps-hotel.example.com",
+        "website": "example.com",
         "hours": "Круглосуточно",
-        "address": "ул. Рыбная, 15, Океанск"
-      },
-      "region": "region-1"
+        "address": "ул. Ленина, 15"
+      }
     },
     {
       "id": 2,
@@ -45,11 +44,10 @@
       "isOpen": false,
       "contacts": {
         "phone": "+7 (999) 111-11-11",
-        "website": "active-rest.example.com",
+        "website": "example.com",
         "hours": "С 10:00 до 22:00",
-        "address": "ул. Лесная, 1, Леск"
-      },
-      "region": "region-1"
+        "address": "ул. Советская, 1"
+      }
     },
     {
       "id": 3,
@@ -68,11 +66,10 @@
       "isOpen": true,
       "contacts": {
         "phone": "+7 (999) 222-22-22",
-        "website": "culture.example.com",
+        "website": "example.com",
         "hours": "С 09:00 до 18:00",
-        "address": "ул. Музейная, 5, Искусственск"
-      },
-      "region": "region-1"
+        "address": "ул. Мира, 42"
+      }
     }
   ]
 }
