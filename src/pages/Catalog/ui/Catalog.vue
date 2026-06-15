@@ -64,12 +64,13 @@ const objects = ref(Array.from({ length: 6 }).map((_, i) => ({
   id: i,
   name: `Объект ${i + 1}`,
   category: categories[i % categories.length],
-  description: 'Отличное место для отдыха с живописными видами. Рекомендуем для посещения с семьей или друзьями, удобное расположение.',
+  description: 'Рыба текст. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.',
   rating: (4 + Math.random()).toFixed(1),
   distance: Math.floor(Math.random() * 20),
   lat: 55.751244 + (Math.random() - 0.5) * 0.1,
   lng: 37.618423 + (Math.random() - 0.5) * 0.1,
-  image: `https://picsum.photos/seed/cat${i}/400/400`
+  image: `https://placehold.jp/3d405b/ffffff/400x400.png?text=Объект+${i + 1}`,
+  isOpen: i % 2 === 0
 })));
 
 const mapCenter = ref<[number, number]>([55.751244, 37.618423]);
@@ -124,10 +125,10 @@ const centerOnMap = (obj: { lat: number, lng: number }) => {
 
         <div class="mb-6">
           <h3 class="font-medium text-gray-900 mb-3 text-sm">Сортировка</h3>
-          <select class="w-full border border-gray-300 rounded-md text-sm py-2 px-3 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-            <option>По умолчанию</option>
-            <option>Сначала с высоким рейтингом</option>
-          </select>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+            <span class="text-sm text-gray-700 group-hover:text-gray-900">По рейтингу</span>
+          </label>
         </div>
       </div>
       
@@ -211,7 +212,7 @@ const centerOnMap = (obj: { lat: number, lng: number }) => {
         </div>
         
         <!-- Mobile Floating Toggle Button -->
-        <div v-show="searchQuery.trim().length > 0" class="md:hidden absolute left-1/2 -translate-x-1/2 z-50 transition-all duration-300 pointer-events-auto flex justify-center w-max"
+        <div v-show="(typeof searchQuery === 'string' ? searchQuery : '').trim().length > 0" class="md:hidden absolute left-1/2 -translate-x-1/2 z-50 transition-all duration-300 pointer-events-auto flex justify-center w-max"
              :style="{ bottom: sheetHeight === 0 ? '112px' : 'calc(max(96px, ' + sheetHeight + 'vh) + 20px)' }"
         >
           <button v-if="sheetHeight > 0" @click="sheetHeight = 0" class="bg-gray-900 text-white px-5 py-3 rounded-full font-medium shadow-lg flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap">
@@ -256,10 +257,10 @@ const centerOnMap = (obj: { lat: number, lng: number }) => {
 
           <div class="mb-8">
             <h3 class="font-medium text-gray-900 mb-3 block text-sm">Сортировка</h3>
-            <select class="w-full border border-gray-300 rounded-lg py-3 px-3 outline-none focus:ring-2 focus:ring-blue-500 text-[15px] bg-white">
-              <option>По умолчанию</option>
-              <option>Сначала с высоким рейтингом</option>
-            </select>
+            <label class="flex items-center gap-3">
+              <input type="checkbox" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+              <span class="text-gray-700 text-[15px]">По рейтингу</span>
+            </label>
           </div>
 
           <button class="w-full bg-blue-600 text-white font-medium py-3 rounded-lg text-[15px] active:bg-blue-700 transition-colors" @click="isFiltersOpen = false">
