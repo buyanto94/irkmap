@@ -3,7 +3,7 @@ import { User, LogIn } from 'lucide-vue-next';
 import { RouterLink } from 'vue-router';
 </script>
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col font-sans">
+  <div class="min-h-dvh bg-gray-50 flex flex-col font-sans">
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">

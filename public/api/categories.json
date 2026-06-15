@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Гостиницы",
+      "slug": "hotels",
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Гостиницы",
+      "sortIndex": 1
+    },
+    {
+      "id": 2,
+      "name": "Активный отдых",
+      "slug": "active",
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Отдых",
+      "sortIndex": 2
+    },
+    {
+      "id": 3,
+      "name": "Культура",
+      "slug": "culture",
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Культура",
+      "sortIndex": 3
+    },
+    {
+      "id": 4,
+      "name": "Рестораны",
+      "slug": "food",
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Рестораны",
+      "sortIndex": 4
+    }
+  ]
+}

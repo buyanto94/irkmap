@@ -1,0 +1,78 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Объект 1",
+      "slug": "sample",
+      "category": "Гостиницы",
+      "description": "Рыба текст. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.",
+      "rating": 4.8,
+      "distance": 5,
+      "lat": 55.751244,
+      "lng": 37.618423,
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Объект+1",
+      "photos": [
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+1+Фото+1",
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+1+Фото+2",
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+1+Фото+3"
+      ],
+      "isOpen": true,
+      "contacts": {
+        "phone": "+7 (999) 000-00-00",
+        "website": "alps-hotel.example.com",
+        "hours": "Круглосуточно",
+        "address": "ул. Рыбная, 15, Океанск"
+      },
+      "region": "region-1"
+    },
+    {
+      "id": 2,
+      "name": "Объект 2",
+      "slug": "sample-2",
+      "category": "Активный отдых",
+      "description": "Рыба текст. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.",
+      "rating": 4.5,
+      "distance": 15,
+      "lat": 55.761244,
+      "lng": 37.628423,
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Объект+2",
+      "photos": [
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+2+Фото+1",
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+2+Фото+2",
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+2+Фото+3"
+      ],
+      "isOpen": false,
+      "contacts": {
+        "phone": "+7 (999) 111-11-11",
+        "website": "active-rest.example.com",
+        "hours": "С 10:00 до 22:00",
+        "address": "ул. Лесная, 1, Леск"
+      },
+      "region": "region-1"
+    },
+    {
+      "id": 3,
+      "name": "Объект 3",
+      "slug": "sample-3",
+      "category": "Культура",
+      "description": "Рыба текст. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.",
+      "rating": 4.9,
+      "distance": 2,
+      "lat": 55.741244,
+      "lng": 37.608423,
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Объект+3",
+      "photos": [
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+3+Фото+1"
+      ],
+      "isOpen": true,
+      "contacts": {
+        "phone": "+7 (999) 222-22-22",
+        "website": "culture.example.com",
+        "hours": "С 09:00 до 18:00",
+        "address": "ул. Музейная, 5, Искусственск"
+      },
+      "region": "region-1"
+    }
+  ]
+}
