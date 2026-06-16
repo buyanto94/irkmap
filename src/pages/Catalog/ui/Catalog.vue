@@ -227,7 +227,7 @@ const goToObject = (obj: TourismObject) => {
            </div>
 
            <!-- Content (List) -->
-           <div class="flex-grow overflow-y-auto px-4 md:px-6 pb-20 pt-1 md:pt-6 md:pb-6 relative z-10 overscroll-contain transition-opacity duration-200"
+           <div class="flex-grow overflow-y-auto px-4 md:px-6 pb-4 pt-1 md:pt-6 md:pb-6 relative z-10 overscroll-contain transition-opacity duration-200"
                 :class="sheetHeight === 0 ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto mt-4 md:mt-0' : 'opacity-100'">
               
               <div v-if="tourismStore.isLoading" class="flex flex-col items-center justify-center py-16 text-center">
