@@ -3,72 +3,71 @@
   "data": [
     {
       "id": 1,
-      "name": "Объект 1",
-      "slug": "sample",
+      "name": "Гостиница «Ангара»",
+      "slug": "hotel-angara",
       "category": "Гостиницы",
-      "description": "Рыба текст. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.",
+      "description": "Расположена в самом центре Иркутска. Рядом находится сквер Кирова и администрация города. Из окон открывается прекрасный вид.",
       "rating": 4.8,
       "distance": 5,
-      "lat": 55.751244,
-      "lng": 37.618423,
-      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Объект+1",
+      "lat": 52.286975,
+      "lng": 104.281223,
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Гостиница+Ангара",
       "photos": [
-        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+1+Фото+1",
-        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+1+Фото+2",
-        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+1+Фото+3"
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Ангара+Фото+1",
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Ангара+Фото+2",
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Ангара+Фото+3"
       ],
       "isOpen": true,
       "contacts": {
-        "phone": "+7 (999) 000-00-00",
-        "website": "example.com",
+        "phone": "+7 (3952) 28-11-11",
+        "website": "angara.ru",
         "hours": "Круглосуточно",
-        "address": "ул. Ленина, 15"
+        "address": "ул. Сухэ-Батора, 7, Иркутск"
       }
     },
     {
       "id": 2,
-      "name": "Объект 2",
-      "slug": "sample-2",
+      "name": "Байкал-Тур",
+      "slug": "baikal-tour",
       "category": "Активный отдых",
-      "description": "Рыба текст. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.",
+      "description": "Организация активного отдыха на Байкале: туры на хивусах, походы, водные экскурсии в Листвянку и Ольхон.",
       "rating": 4.5,
-      "distance": 15,
-      "lat": 55.761244,
-      "lng": 37.628423,
-      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Объект+2",
+      "distance": 65,
+      "lat": 51.850785,
+      "lng": 104.873215,
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Байкал-Тур",
       "photos": [
-        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+2+Фото+1",
-        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+2+Фото+2",
-        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+2+Фото+3"
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Байкал-Тур+Фото+1",
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Байкал-Тур+Фото+2"
       ],
       "isOpen": false,
       "contacts": {
-        "phone": "+7 (999) 111-11-11",
-        "website": "example.com",
-        "hours": "С 10:00 до 22:00",
-        "address": "ул. Советская, 1"
+        "phone": "+7 (3952) 11-22-33",
+        "website": "baikal-tour.ru",
+        "hours": "С 10:00 до 19:00",
+        "address": "пос. Листвянка, ул. Горького, 10"
       }
     },
     {
       "id": 3,
-      "name": "Объект 3",
-      "slug": "sample-3",
+      "name": "Иркутский областной краеведческий музей",
+      "slug": "irkutsk-museum",
       "category": "Культура",
-      "description": "Рыба текст. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты.",
+      "description": "Один из старейших музеев России, рассказывающий об истории, этнографии и природе Восточной Сибири.",
       "rating": 4.9,
       "distance": 2,
-      "lat": 55.741244,
-      "lng": 37.608423,
-      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Объект+3",
+      "lat": 52.275069,
+      "lng": 104.281989,
+      "image": "https://placehold.jp/3d405b/ffffff/400x400.png?text=Музей",
       "photos": [
-        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Объект+3+Фото+1"
+        "https://placehold.jp/3d405b/ffffff/1200x600.png?text=Музей+Фото+1"
       ],
       "isOpen": true,
       "contacts": {
-        "phone": "+7 (999) 222-22-22",
-        "website": "example.com",
-        "hours": "С 09:00 до 18:00",
-        "address": "ул. Мира, 42"
+        "phone": "+7 (3952) 33-34-49",
+        "website": "museum.irkutsk.ru",
+        "hours": "С 10:00 до 18:00",
+        "address": "ул. Карла Маркса, 2, Иркутск"
       }
     }
   ]

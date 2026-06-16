@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 const props = defineProps<{
-  markers: Array<{ id: number; lat: number; lng: number; title: string }>;
+  markers: Array<{ id: number; lat: number; lng: number; title: string, image?: string, category?: string, rating?: number, slug?: string }>;
   center?: [number, number];
   zoom?: number;
 }>();
@@ -16,13 +19,12 @@ const emit = defineEmits<{
 
 const mapContainer = ref<HTMLElement | null>(null);
 let map: L.Map | null = null;
-const markerLayerGroup = L.layerGroup();
+let markerClusterGroup: L.MarkerClusterGroup | null = null;
 
 onMounted(() => {
   if (mapContainer.value) {
-    // Basic setup
     map = L.map(mapContainer.value, {
-      center: props.center || [55.751244, 37.618423], // Default Moscow or something
+      center: props.center || [52.289588, 104.280606],
       zoom: props.zoom || 11,
       zoomControl: false,
     });
@@ -34,9 +36,11 @@ onMounted(() => {
       attribution: '© OpenStreetMap contributors',
     }).addTo(map);
 
-    markerLayerGroup.addTo(map);
+    markerClusterGroup = L.markerClusterGroup({
+      showCoverageOnHover: false,
+    });
+    map.addLayer(markerClusterGroup);
 
-    // Initial markers
     updateMarkers();
 
     const resizeObserver = new ResizeObserver(() => {
@@ -46,14 +50,12 @@ onMounted(() => {
     });
     resizeObserver.observe(mapContainer.value);
 
-    // Map events
     map.on('moveend', () => {
       if (map) {
         emit('bounds-changed', map.getBounds());
       }
     });
 
-    // Fix leaflet marker icon issue
     delete (L.Icon.Default.prototype as { _getIconUrl?: string })._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -64,22 +66,37 @@ onMounted(() => {
 });
 
 const updateMarkers = () => {
-  markerLayerGroup.clearLayers();
+  if (!markerClusterGroup) return;
+  markerClusterGroup.clearLayers();
   
-  // Quick hack for cluster or simple display. 
-  // For real clustering we'd use leaflet.markercluster, but keeping it simple first.
   props.markers.forEach(m => {
+    const popupHtml = `
+      <div class="w-48 text-left">
+        ${m.image ? `<img src="${m.image}" class="w-full h-24 object-cover rounded-md mb-2" />` : ''}
+        ${m.category ? `<div class="text-[10px] font-bold text-blue-600 uppercase mb-1">${m.category}</div>` : ''}
+        <h4 class="font-bold text-gray-900 leading-tight mb-1" style="margin:0 0 4px 0">${m.title}</h4>
+        ${m.rating ? `<div class="text-xs text-amber-500 font-bold mb-2">★ ${m.rating}</div>` : ''}
+        ${m.slug ? `<a href="/catalog/${m.slug}" class="text-blue-600 font-medium text-xs hover:underline block">Подробнее</a>` : ''}
+      </div>
+    `;
+
     const marker = L.marker([m.lat, m.lng])
+      .bindPopup(popupHtml, { minWidth: 200 })
       .bindTooltip(m.title)
       .on('click', () => {
         emit('marker-click', m.id);
       });
-    markerLayerGroup.addLayer(marker);
+      
+    markerClusterGroup!.addLayer(marker);
   });
 };
 
-// watch props.markers and update markers
-import { watch } from 'vue';
+watch(() => props.center, (newCenter) => {
+  if (map && newCenter) {
+    map.setView(newCenter, map.getZoom(), { animate: true });
+  }
+}, { deep: true });
+
 watch(() => props.markers, () => {
   updateMarkers();
 }, { deep: true });

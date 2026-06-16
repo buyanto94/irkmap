@@ -1,20 +1,54 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# IRK Map (Фронтенд)
 
-# Run and deploy your AI Studio app
+Этот репозиторий содержит фронтенд-часть проекта "Турпортал IRK Map" (туристическая карта и каталог для поездок по Иркутской области / Байкалу).
 
-This contains everything you need to run your app locally.
+**Важно:** Backend, база данных и серверная авторизация вынесены в отдельный сервис и не входят в этот репозиторий.
 
-View your app in AI Studio: https://ai.studio/apps/5543fe7b-9f90-412f-bc10-369c8c8b06dd
+## Стек технологий
 
-## Run Locally
+*   **Фреймворк:** Vue 3 (Composition API, `<script setup>`)
+*   **Сборщик:** Vite
+*   **Типизация:** TypeScript
+*   **Роутинг:** Vue Router
+*   **СтейтМенеджер:** Pinia
+*   **Стили и UI:** Tailwind CSS, HeadlessUI, Lucide Icons
+*   **Карта:** Leaflet + OpenStreetMap + Leaflet.markercluster
+*   **Среда:** Node `^20.19.0 || >=22.12.0`
 
-**Prerequisites:**  Node.js
+## Запуск проекта
 
+1. Установите зависимости:
+```bash
+npm install
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+2. Запустите dev-сервер:
+```bash
+npm run dev
+```
+
+3. Для сборки (production build) и проверки типов:
+```bash
+npm run build
+```
+
+## Данные и Mock-API
+
+На данный момент проект работает со статическими JSON-моками, имитирующими ответ бекенда:
+*   Данные категорий лежат в `public/api/categories.json`
+*   Данные объектов лежат в `public/api/objects.json`
+*   Запросы реализованы через базовый инстанс axios. При подключении реального API нужно изменить `baseURL` через `VITE_API_BASE_URL` в `.env`.
+
+## Документация
+
+В репозитории есть документы, подробно описывающие приложение:
+*   [TECH_SPEC.md](./TECH_SPEC.md) — Основное ТЗ проекта, описание ролей пользователей, бизнес-логики и сущностей.
+*   [ORCHESTRATION.md](./ORCHESTRATION.md) — Документ для ИИ-разработчиков и оркестратора с текущими задачами и приоритетами.
+
+## Текущие ограничения
+
+*   В настоящее время реализована форма MVP только публичной части.
+*   Отсутствуют экраны личных кабинетов бизнес-пользователей, модераторов и администраторов.
+*   Отсутствует интеграция Open Graph метаданных для соц. сетей.
+*   Моки не поддерживают пагинацию и динамическую фильтрацию со стороны сервера (фильтрация производится на клиенте).
+*   Полнотекстовый поиск Sphinx ожидается на бекенде, сейчас поиск работает как `includes()` по моковым данным.

@@ -14,7 +14,23 @@ const router = useRouter();
 const tourismStore = useTourismStore();
 
 const searchQuery = ref(typeof route.query.q === 'string' ? route.query.q : '');
-const selectedCategory = ref(typeof route.query.category === 'string' ? route.query.category : '');
+
+let initCats: string[] = [];
+if (Array.isArray(route.query.category)) initCats = route.query.category as string[];
+else if (typeof route.query.category === 'string') initCats = [route.query.category];
+const selectedCategories = ref<string[]>(initCats);
+
+const selectedDistance = ref<number | null>(route.query.distance ? Number(route.query.distance) : null);
+const sortByRating = ref<boolean>(route.query.sort === 'rating');
+
+watch([searchQuery, selectedCategories, selectedDistance, sortByRating], () => {
+  const query: any = {};
+  if (searchQuery.value) query.q = searchQuery.value;
+  if (selectedCategories.value.length) query.category = selectedCategories.value;
+  if (selectedDistance.value) query.distance = selectedDistance.value;
+  if (sortByRating.value) query.sort = 'rating';
+  router.replace({ query }).catch(() => {});
+}, { deep: true });
 
 onMounted(() => {
   tourismStore.fetchCategories();
@@ -58,22 +74,37 @@ const onTouchEnd = () => {
   }
 };
 
+const currentBounds = ref<any>(null);
+
 const filteredObjects = computed(() => {
   let result = tourismStore.objects;
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase();
     result = result.filter(o => o.name.toLowerCase().includes(q) || o.description.toLowerCase().includes(q));
   }
-  if (selectedCategory.value) {
-    const catObj = tourismStore.categories.find(c => c.slug === selectedCategory.value);
-    if (catObj) {
-      result = result.filter(o => o.category === catObj.name);
+  if (selectedCategories.value.length > 0) {
+    const catNames = selectedCategories.value
+      .map(slug => tourismStore.categories.find(c => c.slug === slug)?.name)
+      .filter(Boolean);
+    if (catNames.length > 0) {
+      result = result.filter(o => catNames.includes(o.category));
     }
+  }
+  if (selectedDistance.value) {
+     result = result.filter(o => typeof o.distance === 'number' && o.distance <= selectedDistance.value!);
+  }
+  if (isSyncWithMap.value && currentBounds.value) {
+    const sw = currentBounds.value.getSouthWest();
+    const ne = currentBounds.value.getNorthEast();
+    result = result.filter(o => o.lat >= sw.lat && o.lat <= ne.lat && o.lng >= sw.lng && o.lng <= ne.lng);
+  }
+  if (sortByRating.value) {
+     result = [...result].sort((a, b) => b.rating - a.rating);
   }
   return result;
 });
 
-const mapCenter = ref<[number, number]>([55.751244, 37.618423]);
+const mapCenter = ref<[number, number]>([52.289588, 104.280606]);
 
 const handleMarkerClick = (id: number) => {
   console.log('Marker clicked', id);
@@ -91,18 +122,24 @@ const centerOnMap = (obj: { lat: number, lng: number }) => {
   }
 };
 
-const onMapMoved = () => {
-  if (isSyncWithMap.value) {
-    console.log('Map moved, fetching new data...');
-  }
+const onMapMoved = (bounds: any) => {
+  currentBounds.value = bounds;
 };
 
 const toggleCategory = (slug: string) => {
-  if (selectedCategory.value === slug) {
-    selectedCategory.value = '';
+  const idx = selectedCategories.value.indexOf(slug);
+  if (idx === -1) {
+    selectedCategories.value.push(slug);
   } else {
-    selectedCategory.value = slug;
+    selectedCategories.value.splice(idx, 1);
   }
+};
+
+const resetFilters = () => {
+  searchQuery.value = '';
+  selectedCategories.value = [];
+  selectedDistance.value = null;
+  sortByRating.value = false;
 };
 </script>
 
@@ -126,7 +163,7 @@ const toggleCategory = (slug: string) => {
           <h3 class="font-medium text-gray-900 mb-3 text-sm">Категории</h3>
           <div class="space-y-3">
             <label v-for="cat in tourismStore.categories" :key="cat.slug" class="flex items-center gap-3 cursor-pointer group" @click.prevent="toggleCategory(cat.slug)">
-              <input type="checkbox" :checked="selectedCategory === cat.slug" readonly class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none" />
+              <input type="checkbox" :checked="selectedCategories.includes(cat.slug)" readonly class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none" />
               <span class="text-sm text-gray-700 group-hover:text-gray-900">{{ cat.name }}</span>
             </label>
           </div>
@@ -134,29 +171,29 @@ const toggleCategory = (slug: string) => {
 
         <div class="mb-6">
           <h3 class="font-medium text-gray-900 mb-3 text-sm">Удаленность</h3>
-          <select class="w-full border border-gray-300 rounded-md text-sm py-2 px-3 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-            <option>Любая</option>
-            <option>До 10 км</option>
-            <option>До 50 км</option>
-            <option>До 100 км</option>
+          <select v-model="selectedDistance" class="w-full border border-gray-300 rounded-md text-sm py-2 px-3 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+            <option :value="null">Любая</option>
+            <option :value="10">До 10 км</option>
+            <option :value="50">До 50 км</option>
+            <option :value="100">До 100 км</option>
           </select>
         </div>
 
         <div class="mb-6">
           <h3 class="font-medium text-gray-900 mb-3 text-sm">Сортировка</h3>
           <label class="flex items-center gap-3 cursor-pointer group">
-            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+            <input type="checkbox" v-model="sortByRating" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
             <span class="text-sm text-gray-700 group-hover:text-gray-900">По рейтингу</span>
           </label>
         </div>
       </div>
 
       <!-- ====================== MAIN CONTENT AREA (List & Map) ====================== -->
-      <div class="flex-grow flex flex-col md:flex-row min-w-0 min-h-0 relative overflow-hidden">
+      <div class="flex-grow flex flex-col md:flex-col min-w-0 min-h-0 relative overflow-hidden">
 
         <!-- List / Mobile Sheet -->
         <div 
-          class="mobile-sheet w-full md:w-[400px] z-30 bg-white md:bg-gray-50 flex flex-col md:border-r md:border-gray-200 shrink-0 absolute bottom-0 left-0 md:static"
+          class="mobile-sheet w-full z-30 bg-white md:bg-gray-50 flex flex-col md:border-b md:border-gray-200 shrink-0 absolute bottom-0 left-0 md:static md:h-[50%]"
           :class="{
             'shadow-[0_-8px_30px_rgba(0,0,0,0.12)] md:shadow-none rounded-t-[24px] md:rounded-none': true
           }"
@@ -190,9 +227,9 @@ const toggleCategory = (slug: string) => {
                 :class="sheetHeight === 0 ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto mt-4 md:mt-0' : 'opacity-100'">
               
               <!-- Cards Grid -->
-              <div class="grid grid-cols-1 gap-4">
-                <div v-for="obj in filteredObjects" :key="obj.id" class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md cursor-pointer flex md:flex-col lg:flex-row gap-4 p-3 transition" @click="router.push({ name: 'object-details', params: { slug: obj.slug } })">
-                   <div class="w-24 h-24 md:w-full md:h-32 lg:w-24 lg:h-24 shrink-0 bg-gray-200 rounded-lg overflow-hidden border border-gray-100">
+              <div v-if="filteredObjects.length" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div v-for="obj in filteredObjects" :key="obj.id" class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md cursor-pointer flex gap-4 p-3 transition" @click="router.push({ name: 'object-details', params: { slug: obj.slug } })">
+                   <div class="w-24 h-24 shrink-0 bg-gray-200 rounded-lg overflow-hidden border border-gray-100">
                      <img :src="obj.image" class="w-full h-full object-cover" loading="lazy" />
                    </div>
                    <div class="flex flex-col flex-grow min-w-0">
@@ -211,6 +248,16 @@ const toggleCategory = (slug: string) => {
                    </div>
                 </div>
               </div>
+              
+              <!-- Empty State -->
+              <div v-else class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <SearchIcon class="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Ничего не найдено</h3>
+                <p class="text-gray-500 text-sm max-w-sm">Попробуйте изменить параметры фильтрации или поисковый запрос.</p>
+                <button @click="resetFilters" class="mt-6 text-blue-600 font-medium hover:underline text-sm opacity-90 hover:opacity-100">Сбросить фильтры</button>
+              </div>
            </div>
         </div>
         
@@ -223,7 +270,7 @@ const toggleCategory = (slug: string) => {
              </label>
            </div>
            <InteractiveMap 
-              :markers="filteredObjects.map(o => ({ id: o.id, lat: o.lat, lng: o.lng, title: o.name }))"
+              :markers="filteredObjects.map(o => ({ id: o.id, lat: o.lat, lng: o.lng, title: o.name, image: o.image, category: o.category, rating: o.rating, slug: o.slug }))"
               :center="mapCenter"
               :zoom="12"
               @marker-click="handleMarkerClick"
@@ -259,12 +306,30 @@ const toggleCategory = (slug: string) => {
             <h3 class="font-medium text-gray-900 mb-3 block text-sm">Категории</h3>
             <div class="space-y-3">
               <label v-for="cat in tourismStore.categories" :key="cat.slug" class="flex items-center gap-3 cursor-pointer" @click.prevent="toggleCategory(cat.slug)">
-                <input type="checkbox" :checked="selectedCategory === cat.slug" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none" />
+                <input type="checkbox" :checked="selectedCategories.includes(cat.slug)" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 pointer-events-none" />
                 <span class="text-gray-700 text-base">{{ cat.name }}</span>
               </label>
             </div>
           </div>
           
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-900 mb-3 block text-sm">Удаленность</h3>
+            <select v-model="selectedDistance" class="w-full border border-gray-300 rounded-lg py-3 px-3 outline-none focus:ring-2 focus:ring-blue-500 text-base bg-white">
+              <option :value="null">Любая</option>
+              <option :value="10">До 10 км</option>
+              <option :value="50">До 50 км</option>
+              <option :value="100">До 100 км</option>
+            </select>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="font-medium text-gray-900 mb-3 block text-sm">Сортировка</h3>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" v-model="sortByRating" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+              <span class="text-gray-700 text-base">По рейтингу</span>
+            </label>
+          </div>
+
           <button class="w-full bg-blue-600 text-white font-medium cursor-pointer py-3 rounded-lg text-base active:bg-blue-700 transition-colors" @click="isFiltersOpen = false">
             Применить
           </button>
