@@ -2,6 +2,7 @@
 import { User, LogIn, LayoutDashboard, LogOut } from 'lucide-vue-next';
 import { RouterLink, useRouter } from 'vue-router';
 import { useAuthStore } from '@/app/stores/auth';
+import MobileTabBar from '@/shared/ui/MobileTabBar.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -48,8 +49,11 @@ const handleLogout = () => {
       </div>
     </header>
 
-    <main class="flex-1 w-full min-h-0 relative overflow-y-auto flex flex-col">
-      <slot />
+    <main class="flex-1 w-full min-h-0 relative overflow-y-auto flex flex-col md:pb-0">
+      <div class="flex-1 w-full pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0 flex flex-col">
+        <slot />
+      </div>
     </main>
+    <MobileTabBar />
   </div>
 </template>

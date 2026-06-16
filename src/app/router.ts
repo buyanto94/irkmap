@@ -13,6 +13,7 @@ const RegisterBusiness = () => import('@/pages/Auth/ui/RegisterBusiness.vue');
 
 // Dashboard imports
 const DashboardHome = () => import('@/pages/Dashboard/ui/DashboardHome.vue');
+const Favorites = () => import('@/pages/Favorites/ui/Favorites.vue');
 
 const router = createRouter({
   history: createWebHistory(),
@@ -47,6 +48,11 @@ const router = createRouter({
       name: 'dashboard-home',
       component: DashboardHome,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/favorites',
+      name: 'favorites',
+      component: Favorites,
     },
     {
       path: '/objects/:slug',

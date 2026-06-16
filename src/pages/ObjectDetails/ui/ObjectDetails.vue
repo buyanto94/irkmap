@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DefaultLayout from '@/shared/ui/DefaultLayout.vue';
-import { MapPin, Star, Phone, Globe, Clock } from 'lucide-vue-next';
+import { MapPin, Star, Phone, Globe, Clock, ArrowLeft } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -46,6 +46,14 @@ watch(obj, (newObj) => {
   }
 }, { immediate: true });
 
+const goBack = () => {
+  if (window.history.length > 2) {
+    router.back();
+  } else {
+    router.push({ name: 'catalog' });
+  }
+};
+
 const isPhoneVisible = ref(false);
 
 const showPhone = () => {
@@ -84,8 +92,12 @@ const buildRoute = () => {
 
 <template>
   <DefaultLayout>
-    <div class="max-w-3xl mx-auto px-4 py-8 w-full">
-      
+    <div class="max-w-3xl mx-auto px-4 py-4 md:py-8 w-full flex flex-col gap-4">
+      <button @click="goBack" class="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-medium transition cursor-pointer w-max mb-2">
+        <ArrowLeft class="w-5 h-5" />
+        <span class="text-sm">Назад</span>
+      </button>
+
       <div v-if="!obj && tourismStore.isLoading" class="text-center py-12">
         <span class="text-gray-500 text-sm">Загрузка...</span>
       </div>

@@ -63,7 +63,7 @@ const onTouchMove = (e: TouchEvent) => {
   if (!isDragging.value) return;
   const clientY = e.touches?.[0]?.clientY ?? 0;
   const deltaY = startY.value - clientY;
-  const containerHeight = window.innerHeight - 64; // height without header
+  const containerHeight = window.innerHeight - 128; // height without header and tabbar
   const deltaPct = (deltaY / containerHeight) * 100;
   let newHeight = startHeight.value + deltaPct;
   if (newHeight > 100) newHeight = 100;
@@ -205,8 +205,7 @@ const goToObject = (obj: TourismObject) => {
           :style="{ '--mobile-h': sheetHeight === 0 ? '96px' : `max(96px, ${sheetHeight}%)`, transition: isDragging ? 'none !important' : '' }"
         >
            <!-- Mobile Handle -->
-           <div 
-             class="md:hidden flex items-center justify-center pt-4 pb-3 cursor-grab active:cursor-grabbing shrink-0"
+           <div class="md:hidden flex items-center justify-center pt-4 pb-3 min-h-[44px] cursor-grab active:cursor-grabbing shrink-0"
              @touchstart="onTouchStart"
              @touchmove.prevent="onTouchMove"
              @touchend="onTouchEnd"
@@ -217,18 +216,18 @@ const goToObject = (obj: TourismObject) => {
            <!-- Mobile Search & Filters -->
            <div class="md:hidden px-4 pb-3 shrink-0">
              <div class="flex items-center justify-between">
-                <div class="relative flex-grow mr-2">
-                  <input v-model="searchQuery" type="text" placeholder="Поиск..." class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl text-base outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50/50 focus:bg-white transition-all shadow-sm" />
-                  <SearchIcon class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                <div class="relative flex-grow mr-2 h-11">
+                  <input v-model="searchQuery" type="text" placeholder="Поиск..." class="w-full h-full pl-9 pr-3 border border-gray-300 rounded-xl text-base outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50/50 focus:bg-white transition-all shadow-sm" />
+                  <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 </div>
-                <button @click="isFiltersOpen = true" class="p-2 border border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50 active:scale-95 transition-all text-gray-600 bg-white shadow-sm">
+                <button @click="isFiltersOpen = true" class="w-11 h-11 flex items-center justify-center shrink-0 border border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50 active:scale-95 transition-all text-gray-600 bg-white shadow-sm">
                   <Filter class="w-5 h-5" />
                 </button>
              </div>
            </div>
 
            <!-- Content (List) -->
-           <div class="flex-grow overflow-y-auto px-4 md:px-6 pb-28 pt-1 md:pt-6 md:pb-6 relative z-10 overscroll-contain transition-opacity duration-200"
+           <div class="flex-grow overflow-y-auto px-4 md:px-6 pb-20 pt-1 md:pt-6 md:pb-6 relative z-10 overscroll-contain transition-opacity duration-200"
                 :class="sheetHeight === 0 ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto mt-4 md:mt-0' : 'opacity-100'">
               
               <div v-if="tourismStore.isLoading" class="flex flex-col items-center justify-center py-16 text-center">
@@ -296,7 +295,7 @@ const goToObject = (obj: TourismObject) => {
         
         <!-- Mobile Floating Toggle Button -->
         <div class="md:hidden absolute left-1/2 -translate-x-1/2 z-50 transition-all duration-300 pointer-events-auto flex justify-center w-max"
-             :style="{ bottom: sheetHeight === 0 ? '112px' : `min(calc(100% - 80px), calc(max(96px, ${sheetHeight}%) + 20px))` }"
+             :style="{ bottom: sheetHeight === 0 ? '116px' : `min(calc(100% - 80px), calc(max(96px, ${sheetHeight}%) + 20px))` }"
         >
           <button v-if="sheetHeight > 0" @click="sheetHeight = 0" class="bg-gray-900 text-white px-5 py-3 rounded-full font-medium shadow-lg flex items-center gap-2 active:scale-95 transition-transform whitespace-nowrap cursor-pointer">
             <Map class="w-5 h-5" />
