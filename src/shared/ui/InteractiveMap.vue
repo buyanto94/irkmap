@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster';
@@ -7,7 +8,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 const props = defineProps<{
-  markers: Array<{ id: number; lat: number; lng: number; title: string, image?: string, category?: string, rating?: number, slug?: string }>;
+  markers: Array<{ id: number; lat: number; lng: number; title: string, image?: string, category?: string, rating?: number, slug?: string, categorySlug?: string }>;
   center?: [number, number];
   zoom?: number;
 }>();
@@ -17,6 +18,7 @@ const emit = defineEmits<{
   (e: 'marker-click', id: number): void;
 }>();
 
+const router = useRouter();
 const mapContainer = ref<HTMLElement | null>(null);
 let map: L.Map | null = null;
 let markerClusterGroup: L.MarkerClusterGroup | null = null;
@@ -56,6 +58,19 @@ onMounted(() => {
       }
     });
 
+    map.on('popupopen', (e) => {
+      const link = e.popup.getElement()?.querySelector('.spa-link') as HTMLElement;
+      if (link) {
+        link.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          const url = link.getAttribute('data-url');
+          if (url) {
+            router.push(url);
+          }
+        });
+      }
+    });
+
     emit('bounds-changed', map.getBounds());
 
     delete (L.Icon.Default.prototype as { _getIconUrl?: string })._getIconUrl;
@@ -78,7 +93,7 @@ const updateMarkers = () => {
         ${m.category ? `<div class="text-[10px] font-bold text-blue-600 uppercase mb-1">${m.category}</div>` : ''}
         <h4 class="font-bold text-gray-900 leading-tight mb-1" style="margin:0 0 4px 0">${m.title}</h4>
         ${m.rating ? `<div class="text-xs text-amber-500 font-bold mb-2">★ ${m.rating}</div>` : ''}
-        ${m.slug ? `<a href="/objects/${m.slug}" class="text-blue-600 font-medium text-xs hover:underline block">Подробнее</a>` : ''}
+        ${m.slug ? `<a href="/${m.categorySlug || 'misc'}/${m.slug}" data-url="/${m.categorySlug || 'misc'}/${m.slug}" class="spa-link text-blue-600 font-medium text-xs hover:underline block">Подробнее</a>` : ''}
       </div>
     `;
 

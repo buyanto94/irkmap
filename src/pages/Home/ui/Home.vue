@@ -21,6 +21,12 @@ const performSearch = () => {
     router.push({ name: 'catalog', query: { q: searchQuery.value } });
   }
 };
+
+const goToObject = (obj: any) => {
+  const cat = tourismStore.categories.find(c => c.name === obj.category);
+  const categorySlug = cat ? cat.slug : 'misc';
+  router.push({ name: 'object-details', params: { categorySlug, slug: obj.slug } });
+};
 </script>
 
 <template>
@@ -65,7 +71,7 @@ const performSearch = () => {
       <div v-if="tourismStore.objects.length">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Популярное / Новое</h2>
         <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <div v-for="obj in tourismStore.objects.slice(0, 3)" :key="obj.id" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition flex flex-col" @click="router.push({ name: 'object-details', params: { slug: obj.slug } })">
+          <div v-for="obj in tourismStore.objects.slice(0, 3)" :key="obj.id" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition flex flex-col" @click="goToObject(obj)">
             <div class="h-48 bg-gray-200 shrink-0">
                <img :src="obj.image" class="w-full h-full object-cover" loading="lazy" />
             </div>

@@ -133,6 +133,12 @@ const resetFilters = () => {
   selectedDistance.value = null;
   sortByRating.value = false;
 };
+
+const goToObject = (obj: any) => {
+  const cat = tourismStore.categories.find(c => c.name === obj.category);
+  const categorySlug = cat ? cat.slug : 'misc';
+  router.push({ name: 'object-details', params: { categorySlug, slug: obj.slug } });
+};
 </script>
 
 <template>
@@ -220,7 +226,7 @@ const resetFilters = () => {
               
               <!-- Cards Grid -->
               <div v-if="filteredObjects.length" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                <div v-for="obj in filteredObjects" :key="obj.id" class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md cursor-pointer flex gap-4 p-3 transition" @click="router.push({ name: 'object-details', params: { slug: obj.slug } })">
+                <div v-for="obj in filteredObjects" :key="obj.id" class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md cursor-pointer flex gap-4 p-3 transition" @click="goToObject(obj)">
                    <div class="w-24 h-24 shrink-0 bg-gray-200 rounded-lg overflow-hidden border border-gray-100">
                      <img :src="obj.image" class="w-full h-full object-cover" loading="lazy" />
                    </div>
@@ -262,7 +268,11 @@ const resetFilters = () => {
              </label>
            </div>
            <InteractiveMap 
-              :markers="filteredObjects.map(o => ({ id: o.id, lat: o.lat, lng: o.lng, title: o.name, image: o.image, category: o.category, rating: o.rating, slug: o.slug }))"
+              :markers="filteredObjects.map(o => {
+                const cat = tourismStore.categories.find(c => c.name === o.category);
+                const categorySlug = cat ? cat.slug : 'misc';
+                return { id: o.id, lat: o.lat, lng: o.lng, title: o.name, image: o.image, category: o.category, rating: o.rating, slug: o.slug, categorySlug };
+              })"
               :center="mapCenter"
               :zoom="12"
               @marker-click="handleMarkerClick"

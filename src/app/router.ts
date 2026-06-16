@@ -20,6 +20,11 @@ const router = createRouter({
     },
     {
       path: '/objects/:slug',
+      name: 'object-details-legacy',
+      component: ObjectDetails,
+    },
+    {
+      path: '/:categorySlug/:slug',
       name: 'object-details',
       component: ObjectDetails,
     },

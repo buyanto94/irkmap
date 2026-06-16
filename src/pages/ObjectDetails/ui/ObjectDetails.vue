@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination } from 'swiper/modules';
 import { useTourismStore } from '@/app/stores/tourism';
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { Fancybox } from '@fancyapps/ui';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import 'swiper/css';
@@ -20,6 +20,9 @@ const swiperModules = [Navigation, Pagination];
 const tourismStore = useTourismStore();
 
 onMounted(() => {
+  if (tourismStore.categories.length === 0) {
+    tourismStore.fetchCategories();
+  }
   if (tourismStore.objects.length === 0) {
     tourismStore.fetchObjects();
   }
@@ -27,6 +30,14 @@ onMounted(() => {
 
 const slug = route.params.slug as string;
 const obj = tourismStore.getObjectBySlug(slug);
+
+watch(obj, (newObj) => {
+  if (newObj && route.name === 'object-details-legacy') {
+    const cat = tourismStore.categories.find(c => c.name === newObj.category);
+    const categorySlug = cat ? cat.slug : 'misc';
+    router.replace({ name: 'object-details', params: { categorySlug, slug: newObj.slug } });
+  }
+}, { immediate: true });
 
 const showPhone = () => {
   if (obj.value?.contacts?.phone) {
