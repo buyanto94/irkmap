@@ -231,8 +231,16 @@ const goToObject = (obj: TourismObject) => {
            <div class="flex-grow overflow-y-auto px-4 md:px-6 pb-28 pt-1 md:pt-6 md:pb-6 relative z-10 overscroll-contain transition-opacity duration-200"
                 :class="sheetHeight === 0 ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto mt-4 md:mt-0' : 'opacity-100'">
               
+              <div v-if="tourismStore.isLoading" class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
+                <span class="text-gray-500 text-sm">Загрузка данных...</span>
+              </div>
+              <div v-else-if="tourismStore.error" class="flex flex-col items-center justify-center py-16 text-center text-red-500">
+                <span class="text-sm font-medium">{{ tourismStore.error }}</span>
+              </div>
+              
               <!-- Cards Grid -->
-              <div v-if="filteredObjects.length" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div v-else-if="filteredObjects.length" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 <div v-for="obj in filteredObjects" :key="obj.id" class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md cursor-pointer flex gap-4 p-3 transition" @click="goToObject(obj)">
                    <div class="w-24 h-24 shrink-0 bg-gray-200 rounded-lg overflow-hidden border border-gray-100">
                      <img :src="obj.image" class="w-full h-full object-cover" loading="lazy" />

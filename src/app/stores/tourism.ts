@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { axiosClient } from '@/shared/api/axiosClient';
 import type { TourismObject, Category, CategoriesResponse, ObjectsResponse } from '@/entities/tourism';
 
@@ -41,10 +41,6 @@ export const useTourismStore = defineStore('tourism', () => {
     }
   };
 
-  const getObjectBySlug = (slug: string) => {
-    return computed(() => objects.value.find((obj) => obj.slug === slug));
-  };
-
   const getCategorySlug = (categoryName: string) => {
     const cat = categories.value.find(c => c.name === categoryName);
     return cat ? cat.slug : 'misc';
@@ -57,7 +53,6 @@ export const useTourismStore = defineStore('tourism', () => {
     error,
     fetchCategories,
     fetchObjects,
-    getObjectBySlug,
     getCategorySlug
   };
 });

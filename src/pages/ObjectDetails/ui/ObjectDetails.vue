@@ -5,9 +5,10 @@ import { useRoute, useRouter } from 'vue-router';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination } from 'swiper/modules';
 import { useTourismStore } from '@/app/stores/tourism';
-import { onMounted, watch, computed } from 'vue';
+import { onMounted, watch, computed, ref } from 'vue';
 import { Fancybox } from '@fancyapps/ui';
 import { useMeta } from '@/shared/composables/useMeta';
+import InteractiveMap from '@/shared/ui/InteractiveMap.vue';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -45,14 +46,18 @@ watch(obj, (newObj) => {
   }
 }, { immediate: true });
 
+const isPhoneVisible = ref(false);
+
 const showPhone = () => {
-  if (obj.value?.contacts?.phone) {
-    alert(`Телефон: ${obj.value.contacts.phone}`);
+  if (!isPhoneVisible.value) {
+    console.log(`[MOCK ANALYTICS] "show_phone" clicked for: ${obj.value?.name}`);
+    isPhoneVisible.value = true;
   }
 };
 
 const goToWebsite = () => {
   if (obj.value?.contacts?.website) {
+    console.log(`[MOCK ANALYTICS] "go_to_website" clicked for: ${obj.value?.name}`);
     let url = obj.value.contacts.website;
     if (!url.startsWith('http')) {
       url = 'https://' + url;
@@ -67,6 +72,13 @@ const openGallery = (index: number) => {
   Fancybox.show(images, {
     startIndex: index,
   });
+};
+
+const buildRoute = () => {
+  if (obj.value?.lat && obj.value?.lng) {
+    console.log(`[MOCK ANALYTICS] "build_route" clicked for: ${obj.value?.name}`);
+    window.open(`https://yandex.ru/maps/?rtext=~${obj.value.lat},${obj.value.lng}`, '_blank');
+  }
 };
 </script>
 
@@ -119,7 +131,7 @@ const openGallery = (index: number) => {
             <div class="flex flex-col sm:flex-row gap-3 mt-2" v-if="obj.contacts">
                <button v-if="obj.contacts.phone" @click="showPhone" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-medium transition cursor-pointer flex-grow">
                  <Phone class="w-5 h-5" />
-                 Показать телефон
+                 {{ isPhoneVisible ? obj.contacts.phone : 'Показать телефон' }}
                </button>
                <button v-if="obj.contacts.website" @click="goToWebsite" class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 py-3 px-6 rounded-xl font-medium transition cursor-pointer flex-grow">
                  <Globe class="w-5 h-5" />
@@ -135,11 +147,18 @@ const openGallery = (index: number) => {
               <MapPin class="w-5 h-5 text-gray-400 shrink-0" />
               {{ obj.contacts.address }}
             </p>
-            <div class="h-48 bg-gray-100 rounded-xl relative overflow-hidden flex flex-col items-center justify-center text-sm font-medium text-gray-500 border border-gray-200">
-              <MapPin class="w-6 h-6 text-gray-400 mb-1" />
-              Статичная карта 
+            <div v-if="obj.lat && obj.lng" class="h-64 sm:h-80 bg-gray-100 rounded-xl relative overflow-hidden flex flex-col z-0 border border-gray-200">
+              <InteractiveMap 
+                :markers="[{ id: obj.id, lat: obj.lat, lng: obj.lng, title: obj.name, image: obj.photos?.[0] || obj.image, category: obj.category, rating: obj.rating, slug: obj.slug, categorySlug: tourismStore.getCategorySlug(obj.category) }]"
+                :center="[obj.lat, obj.lng]"
+                :zoom="14"
+              />
             </div>
-            <button class="w-full mt-2 bg-gray-100 border border-gray-200 text-gray-900 py-3 rounded-xl font-medium cursor-pointer hover:bg-gray-200 transition">
+            <div v-else class="h-48 bg-gray-100 rounded-xl relative overflow-hidden flex flex-col items-center justify-center text-sm font-medium text-gray-500 border border-gray-200">
+              <MapPin class="w-6 h-6 text-gray-400 mb-1" />
+              Координаты отсутствуют 
+            </div>
+            <button v-if="obj.lat && obj.lng" @click="buildRoute" class="w-full mt-2 bg-gray-100 border border-gray-200 text-gray-900 py-3 rounded-xl font-medium cursor-pointer hover:bg-gray-200 transition">
               Построить маршрут
             </button>
           </div>
