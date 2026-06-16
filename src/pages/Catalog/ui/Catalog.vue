@@ -112,14 +112,6 @@ const handleMarkerClick = (id: number) => {
 
 const centerOnMap = (obj: { lat: number, lng: number }) => {
   mapCenter.value = [obj.lat, obj.lng];
-  if (window.innerWidth < 768) {
-     window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-     const mapEl = document.getElementById('desktop-map-container');
-     if (mapEl) {
-       mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-     }
-  }
 };
 
 const onMapMoved = (bounds: any) => {

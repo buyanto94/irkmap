@@ -56,6 +56,8 @@ onMounted(() => {
       }
     });
 
+    emit('bounds-changed', map.getBounds());
+
     delete (L.Icon.Default.prototype as { _getIconUrl?: string })._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -76,7 +78,7 @@ const updateMarkers = () => {
         ${m.category ? `<div class="text-[10px] font-bold text-blue-600 uppercase mb-1">${m.category}</div>` : ''}
         <h4 class="font-bold text-gray-900 leading-tight mb-1" style="margin:0 0 4px 0">${m.title}</h4>
         ${m.rating ? `<div class="text-xs text-amber-500 font-bold mb-2">★ ${m.rating}</div>` : ''}
-        ${m.slug ? `<a href="/catalog/${m.slug}" class="text-blue-600 font-medium text-xs hover:underline block">Подробнее</a>` : ''}
+        ${m.slug ? `<a href="/objects/${m.slug}" class="text-blue-600 font-medium text-xs hover:underline block">Подробнее</a>` : ''}
       </div>
     `;
 
