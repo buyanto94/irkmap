@@ -4,8 +4,12 @@ import { Search } from 'lucide-vue-next';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTourismStore } from '@/app/stores/tourism';
+import type { TourismObject } from '@/entities/tourism';
+import { useMeta } from '@/shared/composables/useMeta';
 
 defineOptions({ name: 'HomeView' });
+
+useMeta(() => ({}));
 
 const router = useRouter();
 const searchQuery = ref('');
@@ -22,9 +26,8 @@ const performSearch = () => {
   }
 };
 
-const goToObject = (obj: any) => {
-  const cat = tourismStore.categories.find(c => c.name === obj.category);
-  const categorySlug = cat ? cat.slug : 'misc';
+const goToObject = (obj: TourismObject) => {
+  const categorySlug = tourismStore.getCategorySlug(obj.category);
   router.push({ name: 'object-details', params: { categorySlug, slug: obj.slug } });
 };
 </script>

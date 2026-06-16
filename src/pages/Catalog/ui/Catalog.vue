@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import DefaultLayout from '@/shared/ui/DefaultLayout.vue';
 import { ref, watch, onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router';
 import { Star, Search as SearchIcon, Filter, Map, List } from 'lucide-vue-next';
 import InteractiveMap from '@/shared/ui/InteractiveMap.vue';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/vue';
 import { useTourismStore } from '@/app/stores/tourism';
+import type { TourismObject } from '@/entities/tourism';
+import type { LatLngBounds } from 'leaflet';
+import { useMeta } from '@/shared/composables/useMeta';
 
 defineOptions({ name: 'CatalogView' });
+
+useMeta(() => ({
+  title: 'Каталог',
+  description: 'Поиск мест для отдыха: гостиницы, рестораны, кемпинги и базы отдыха на карте Иркутской области.'
+}));
 
 const route = useRoute();
 const router = useRouter();
@@ -24,10 +32,10 @@ const selectedDistance = ref<number | null>(route.query.distance ? Number(route.
 const sortByRating = ref<boolean>(route.query.sort === 'rating');
 
 watch([searchQuery, selectedCategories, selectedDistance, sortByRating], () => {
-  const query: any = {};
+  const query: LocationQueryRaw = {};
   if (searchQuery.value) query.q = searchQuery.value;
   if (selectedCategories.value.length) query.category = selectedCategories.value;
-  if (selectedDistance.value) query.distance = selectedDistance.value;
+  if (selectedDistance.value) query.distance = String(selectedDistance.value);
   if (sortByRating.value) query.sort = 'rating';
   router.replace({ query }).catch(() => {});
 }, { deep: true });
@@ -74,7 +82,7 @@ const onTouchEnd = () => {
   }
 };
 
-const currentBounds = ref<any>(null);
+const currentBounds = ref<LatLngBounds | null>(null);
 
 const filteredObjects = computed(() => {
   let result = tourismStore.objects;
@@ -114,7 +122,7 @@ const centerOnMap = (obj: { lat: number, lng: number }) => {
   mapCenter.value = [obj.lat, obj.lng];
 };
 
-const onMapMoved = (bounds: any) => {
+const onMapMoved = (bounds: LatLngBounds) => {
   currentBounds.value = bounds;
 };
 
@@ -134,9 +142,8 @@ const resetFilters = () => {
   sortByRating.value = false;
 };
 
-const goToObject = (obj: any) => {
-  const cat = tourismStore.categories.find(c => c.name === obj.category);
-  const categorySlug = cat ? cat.slug : 'misc';
+const goToObject = (obj: TourismObject) => {
+  const categorySlug = tourismStore.getCategorySlug(obj.category);
   router.push({ name: 'object-details', params: { categorySlug, slug: obj.slug } });
 };
 </script>
@@ -269,8 +276,7 @@ const goToObject = (obj: any) => {
            </div>
            <InteractiveMap 
               :markers="filteredObjects.map(o => {
-                const cat = tourismStore.categories.find(c => c.name === o.category);
-                const categorySlug = cat ? cat.slug : 'misc';
+                const categorySlug = tourismStore.getCategorySlug(o.category);
                 return { id: o.id, lat: o.lat, lng: o.lng, title: o.name, image: o.image, category: o.category, rating: o.rating, slug: o.slug, categorySlug };
               })"
               :center="mapCenter"

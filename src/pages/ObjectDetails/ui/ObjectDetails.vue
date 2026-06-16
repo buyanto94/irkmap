@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import DefaultLayout from '@/shared/ui/DefaultLayout.vue';
-import { MapPin, Star, Phone, Globe, Clock, ChevronLeft } from 'lucide-vue-next';
+import { MapPin, Star, Phone, Globe, Clock } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Pagination } from 'swiper/modules';
 import { useTourismStore } from '@/app/stores/tourism';
-import { onMounted, watch } from 'vue';
+import { onMounted, watch, computed } from 'vue';
 import { Fancybox } from '@fancyapps/ui';
+import { useMeta } from '@/shared/composables/useMeta';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -19,6 +20,15 @@ const router = useRouter();
 const swiperModules = [Navigation, Pagination];
 const tourismStore = useTourismStore();
 
+const slug = computed(() => route.params.slug as string);
+const obj = computed(() => tourismStore.objects.find((o) => o.slug === slug.value));
+
+useMeta(() => ({
+  title: obj.value?.name,
+  description: obj.value?.description,
+  image: obj.value?.photos?.[0] || obj.value?.image
+}));
+
 onMounted(() => {
   if (tourismStore.categories.length === 0) {
     tourismStore.fetchCategories();
@@ -28,13 +38,9 @@ onMounted(() => {
   }
 });
 
-const slug = route.params.slug as string;
-const obj = tourismStore.getObjectBySlug(slug);
-
 watch(obj, (newObj) => {
   if (newObj && route.name === 'object-details-legacy') {
-    const cat = tourismStore.categories.find(c => c.name === newObj.category);
-    const categorySlug = cat ? cat.slug : 'misc';
+    const categorySlug = tourismStore.getCategorySlug(newObj.category);
     router.replace({ name: 'object-details', params: { categorySlug, slug: newObj.slug } });
   }
 }, { immediate: true });

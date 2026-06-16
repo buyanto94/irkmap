@@ -17,7 +17,7 @@ export const useTourismStore = defineStore('tourism', () => {
       if (data.success) {
         categories.value = data.data.sort((a, b) => a.sortIndex - b.sortIndex);
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
       error.value = 'Failed to fetch categories';
     } finally {
@@ -33,7 +33,7 @@ export const useTourismStore = defineStore('tourism', () => {
       if (data.success) {
         objects.value = data.data;
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
       error.value = 'Failed to fetch objects';
     } finally {
@@ -45,6 +45,11 @@ export const useTourismStore = defineStore('tourism', () => {
     return computed(() => objects.value.find((obj) => obj.slug === slug));
   };
 
+  const getCategorySlug = (categoryName: string) => {
+    const cat = categories.value.find(c => c.name === categoryName);
+    return cat ? cat.slug : 'misc';
+  };
+
   return {
     objects,
     categories,
@@ -52,6 +57,7 @@ export const useTourismStore = defineStore('tourism', () => {
     error,
     fetchCategories,
     fetchObjects,
-    getObjectBySlug
+    getObjectBySlug,
+    getCategorySlug
   };
 });
