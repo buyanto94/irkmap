@@ -9,6 +9,9 @@ import { useTourismStore } from '@/app/stores/tourism';
 import type { TourismObject } from '@/entities/tourism';
 import type { LatLngBounds } from 'leaflet';
 import { useMeta } from '@/shared/composables/useMeta';
+import SkeletonCard from '@/shared/ui/SkeletonCard.vue';
+import EmptyState from '@/shared/ui/EmptyState.vue';
+import ErrorState from '@/shared/ui/ErrorState.vue';
 
 defineOptions({ name: 'CatalogView' });
 
@@ -230,16 +233,22 @@ const goToObject = (obj: TourismObject) => {
            <div class="flex-grow overflow-y-auto px-4 md:px-6 pb-4 pt-1 md:pt-6 md:pb-6 relative z-10 overscroll-contain transition-opacity duration-200"
                 :class="sheetHeight === 0 ? 'opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto mt-4 md:mt-0' : 'opacity-100'">
               
-              <div v-if="tourismStore.isLoading" class="flex flex-col items-center justify-center py-16 text-center">
-                <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
-                <span class="text-gray-500 text-sm">Загрузка данных...</span>
+              <div v-if="tourismStore.isLoading" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                <SkeletonCard v-for="i in 6" :key="i" />
               </div>
-              <div v-else-if="tourismStore.error" class="flex flex-col items-center justify-center py-16 text-center text-red-500">
-                <span class="text-sm font-medium">{{ tourismStore.error }}</span>
+              <div v-else-if="tourismStore.error">
+                <ErrorState :description="tourismStore.error" @retry="tourismStore.fetchCategories()" />
+              </div>
+              <div v-else-if="filteredObjects.length === 0">
+                <EmptyState>
+                  <template #action>
+                    <button @click="resetFilters" class="text-blue-600 font-medium hover:underline text-sm opacity-90 hover:opacity-100">Сбросить фильтры</button>
+                  </template>
+                </EmptyState>
               </div>
               
               <!-- Cards Grid -->
-              <div v-else-if="filteredObjects.length" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div v-else class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 <div v-for="obj in filteredObjects" :key="obj.id" class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md cursor-pointer flex gap-4 p-3 transition" @click="goToObject(obj)">
                    <div class="w-24 h-24 shrink-0 bg-gray-200 rounded-lg overflow-hidden border border-gray-100">
                      <img :src="obj.image" class="w-full h-full object-cover" loading="lazy" />
@@ -259,16 +268,6 @@ const goToObject = (obj: TourismObject) => {
                       </div>
                    </div>
                 </div>
-              </div>
-              
-              <!-- Empty State -->
-              <div v-else class="flex flex-col items-center justify-center py-16 text-center">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <SearchIcon class="w-8 h-8 text-gray-400" />
-                </div>
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Ничего не найдено</h3>
-                <p class="text-gray-500 text-sm max-w-sm">Попробуйте изменить параметры фильтрации или поисковый запрос.</p>
-                <button @click="resetFilters" class="mt-6 text-blue-600 font-medium hover:underline text-sm opacity-90 hover:opacity-100">Сбросить фильтры</button>
               </div>
            </div>
         </div>

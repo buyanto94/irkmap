@@ -6,6 +6,9 @@ import { useRouter } from 'vue-router';
 import { useTourismStore } from '@/app/stores/tourism';
 import type { TourismObject } from '@/entities/tourism';
 import { useMeta } from '@/shared/composables/useMeta';
+import SkeletonCard from '@/shared/ui/SkeletonCard.vue';
+import Skeleton from '@/shared/ui/Skeleton.vue';
+import ErrorState from '@/shared/ui/ErrorState.vue';
 
 defineOptions({ name: 'HomeView' });
 
@@ -46,19 +49,32 @@ const goToObject = (obj: TourismObject) => {
             @keyup.enter="performSearch"
             type="text"
             placeholder="Поиск по названию или ключевым словам..."
-            class="w-full pl-12 pr-4 py-4 rounded-full border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg outline-none"
+            class="w-full pl-12 pr-4 py-4 rounded-full border border-gray-300 shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-lg outline-none"
           />
           <Search class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
         </div>
       </div>
 
-      <div v-if="tourismStore.isLoading" class="flex flex-col items-center justify-center py-20 text-center">
-        <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
-        <span class="text-gray-500 text-sm">Загрузка данных...</span>
+      <div v-if="tourismStore.isLoading">
+        <div class="mb-16">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Категории</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div v-for="i in 4" :key="i" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
+              <Skeleton circle :width="64" :height="64" class="mb-4" />
+              <Skeleton height="20px" width="70%" />
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Популярное / Новое</h2>
+          <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <SkeletonCard v-for="i in 3" :key="i" />
+          </div>
+        </div>
       </div>
 
-      <div v-else-if="tourismStore.error" class="flex flex-col items-center justify-center py-20 text-center text-red-500">
-        <span class="text-sm font-medium">{{ tourismStore.error }}</span>
+      <div v-else-if="tourismStore.error">
+        <ErrorState :description="tourismStore.error" @retry="tourismStore.fetchCategories(); tourismStore.fetchObjects();" />
       </div>
 
       <template v-else>
